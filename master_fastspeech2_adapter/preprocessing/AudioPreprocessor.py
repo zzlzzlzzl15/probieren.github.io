@@ -11,7 +11,7 @@ from torchaudio.transforms import Resample
 
 class AudioPreprocessor: #
 
-    def __init__(self, input_sr, output_sr=None, melspec_buckets=80, hop_length=256, n_fft=1024, cut_silence=False, device="cpu", fmax_for_spec=8000):
+    def __init__(self, input_sr, output_sr=None, melspec_buckets=80, hop_length=256, n_fft=1024, cut_silence=False, device="cpu", fmax_for_spec=8000): # sampling rate 8000
         """
         The parameters are by default set up to do well
         on a 16kHz signal. A different sampling rate may
@@ -26,7 +26,7 @@ class AudioPreprocessor: #
         self.hop_length = hop_length
         self.n_fft = n_fft
         self.mel_buckets = melspec_buckets
-        self.meter = pyln.Meter(input_sr)
+        self.meter = pyln.Meter(input_sr) # 查找音频文件的响度 Find the loudness of an audio file 目的是speech to text
         self.final_sr = input_sr
         self.fmax_for_spec = fmax_for_spec
         if cut_silence:
@@ -36,7 +36,7 @@ class AudioPreprocessor: #
                                                       model='silero_vad',
                                                       force_reload=False,
                                                       onnx=False,
-                                                      verbose=False)
+                                                      verbose=False) # 调用silero_vad This repository also includes Number Detector and Language classifier models
             (self.get_speech_timestamps,
              self.save_audio,
              self.read_audio,
@@ -53,7 +53,7 @@ class AudioPreprocessor: #
         else:
             self.resample = lambda x: x
 
-    def cut_silence_from_audio(self, audio):
+    def cut_silence_from_audio(self, audio): # cut the mid of sound
         """
         https://github.com/snakers4/silero-vad
         """
@@ -71,7 +71,7 @@ class AudioPreprocessor: #
         make sure we deal with a 1D array
         """
         if len(x.shape) == 2:
-            return lb.to_mono(numpy.transpose(x))
+            return lb.to_mono(numpy.transpose(x)) # Reduce audio data to mono
         else:
             return x
 
@@ -107,7 +107,7 @@ class AudioPreprocessor: #
         # get mel basis
         fmin = 0 if fmin is None else fmin
         fmax = sampling_rate / 2 if fmax is None else fmax
-        mel_basis = librosa.filters.mel(sampling_rate, self.n_fft, self.mel_buckets, fmin, fmax)
+        mel_basis = librosa.filters.mel(sampling_rate, self.n_fft, self.mel_buckets, fmin, fmax) # use band filter for mel filter
         # apply log and return
         return torch.Tensor(np.log10(np.maximum(eps, np.dot(spc, mel_basis.T)))).transpose(0, 1)
 
