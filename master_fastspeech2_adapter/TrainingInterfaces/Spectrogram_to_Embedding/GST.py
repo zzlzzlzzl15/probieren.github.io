@@ -139,8 +139,8 @@ class ReferenceEncoder(torch.nn.Module):
         # get the number of GRU input units
         gru_in_units = idim
         for i in range(conv_layers):
-            gru_in_units = (gru_in_units - conv_kernel_size + 2 * padding) // conv_stride + 1
-        gru_in_units *= conv_out_chans
+            gru_in_units = (gru_in_units - conv_kernel_size + 2 * padding) // conv_stride + 1 # calculate the length of GRU units number
+        gru_in_units *= conv_out_chans # calculate input length of gru output length of conv_layer
         self.gru = torch.nn.GRU(gru_in_units, gru_units, gru_layers, batch_first=True)
 
     def forward(self, speech):
@@ -151,7 +151,7 @@ class ReferenceEncoder(torch.nn.Module):
             Tensor: Reference embedding (B, gru_units)
         """
         batch_size = speech.size(0)
-        xs = speech.unsqueeze(1)  # (B, 1, Lmax, idim)
+        xs = speech.unsqueeze(1)  # (B, 1, Lmax, idim) add dim at 2nd dim
         hs = self.convs(xs).transpose(1, 2)  # (B, Lmax', conv_out_chans, idim')
         # NOTE(kan-bayashi): We need to care the length?
         time_length = hs.size(1)
