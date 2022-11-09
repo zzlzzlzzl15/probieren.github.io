@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fabcbf69-f8a0-4d57-be77-debeaf8d5fa7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/preprocessing/GSTExtractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing/GSTExtractor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -79,8 +79,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-37" />
-    <option name="y" value="12" />
+    <option name="x" value="88" />
+    <option name="y" value="26" />
     <option name="width" value="1485" />
     <option name="height" value="990" />
   </component>
@@ -116,6 +116,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -150,7 +151,7 @@
       <option name="presentableId" value="Default" />
       <updated>1667833722813</updated>
       <workItem from="1667833735883" duration="775000" />
-      <workItem from="1667834606993" duration="7100000" />
+      <workItem from="1667834606993" duration="7702000" />
     </task>
     <task id="LOCAL-00001" summary="change">
       <created>1667834264171</created>
@@ -166,11 +167,18 @@
       <option name="project" value="LOCAL" />
       <updated>1667844991694</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="change">
+      <created>1667860477388</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1667860477388</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7875000" />
+    <option name="totallyTimeSpent" value="8477000" />
   </component>
   <component name="TodoView" selected-index="5">
     <todo-panel id="selected-file">
@@ -183,6 +191,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-29" y="10" width="1188" height="792" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21769911" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
