@@ -177,6 +177,7 @@ class StyleTokenLayer(torch.nn.Module):
         dropout_rate (float, optional): Dropout rate in multi-head attention.
     """
 
+
     def __init__(
             self,
             ref_embed_dim: int = 128,
