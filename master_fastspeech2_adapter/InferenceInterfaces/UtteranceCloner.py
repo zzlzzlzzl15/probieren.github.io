@@ -13,6 +13,7 @@ from TrainingInterfaces.Text_to_Spectrogram.AutoAligner.Aligner import Aligner
 from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.DurationCalculator import DurationCalculator
 from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.EnergyCalculator import EnergyCalculator
 from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.PitchCalculator import Parselmouth
+from Utility.storage_config import MODELS_DIR
 
 
 class UtteranceCloner:
@@ -22,7 +23,7 @@ class UtteranceCloner:
         self.ap = AudioPreprocessor(input_sr=16000, output_sr=16000, melspec_buckets=80, hop_length=256, n_fft=1024, cut_silence=False)
         self.tf = ArticulatoryCombinedTextFrontend(language="en")
         self.device = device
-        acoustic_checkpoint_path = os.path.join("Models", "Aligner", "aligner.pt")
+        acoustic_checkpoint_path = os.path.join(MODELS_DIR, "Aligner", "aligner.pt")
         self.aligner_weights = torch.load(acoustic_checkpoint_path, map_location='cpu')["asr_model"]
         torch.hub._validate_not_a_forked_repo = lambda a, b, c: True  # torch 1.9 has a bug in the hub loading, this is a workaround
         # careful: assumes 16kHz or 8kHz audio
@@ -66,7 +67,7 @@ class UtteranceCloner:
 
         if on_line_fine_tune:
             # we fine-tune the aligner for a couple steps using SGD. This makes cloning pretty slow, but the results are greatly improved.
-            steps = 10
+            steps = 5
             tokens = list()  # we need an ID sequence for training rather than a sequence of phonological features
             for vector in text:
                 if vector[get_feature_to_index_lookup()["word-boundary"]] == 0:
@@ -148,7 +149,7 @@ class UtteranceCloner:
     def clone_utterance(self,
                         path_to_reference_audio,
                         reference_transcription,
-                        filename_of_result,
+                        filename_of_result=None,
                         clone_speaker_identity=True,
                         lang="de"):
         if clone_speaker_identity:
@@ -162,15 +163,17 @@ class UtteranceCloner:
         end_sil = torch.zeros([silence_frames_end * 3]).to(self.device)  # timestamps are from 16kHz, but now we're using 48kHz, so upsampling required
         cloned_speech = self.tts(reference_transcription, view=False, durations=duration, pitch=pitch, energy=energy)
         cloned_utt = torch.cat((start_sil, cloned_speech, end_sil), dim=0)
-        sf.write(file=filename_of_result, data=cloned_utt.cpu().numpy(), samplerate=48000)
+        if filename_of_result is not None:
+            sf.write(file=filename_of_result, data=cloned_utt.cpu().numpy(), samplerate=48000)
         if clone_speaker_identity:
             self.tts.default_utterance_embedding = prev_embedding.to(self.device)  # return to normal
+        return cloned_utt.cpu().numpy()
 
     def biblical_accurate_angel_mode(self,
                                      path_to_reference_audio,
                                      reference_transcription,
-                                     filename_of_result,
                                      list_of_speaker_references_for_ensemble,
+                                     filename_of_result=None,
                                      lang="de"):
         prev_embedding = self.tts.default_utterance_embedding.clone().detach()
         duration, pitch, energy, silence_frames_start, silence_frames_end = self.extract_prosody(reference_transcription,
@@ -185,5 +188,7 @@ class UtteranceCloner:
             list_of_cloned_speeches.append(self.tts(reference_transcription, view=False, durations=duration, pitch=pitch, energy=energy))
         cloned_speech = torch.stack(list_of_cloned_speeches).mean(dim=0)
         cloned_utt = torch.cat((start_sil, cloned_speech, end_sil), dim=0)
-        sf.write(file=filename_of_result, data=cloned_utt.cpu().numpy(), samplerate=48000)
+        if filename_of_result is not None:
+            sf.write(file=filename_of_result, data=cloned_utt.cpu().numpy(), samplerate=48000)
         self.tts.default_utterance_embedding = prev_embedding.to(self.device)  # return to normal
+        return cloned_utt.cpu().numpy()
