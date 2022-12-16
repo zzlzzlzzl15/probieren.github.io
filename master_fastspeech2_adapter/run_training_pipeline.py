@@ -11,6 +11,7 @@ from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_example import 
 from TrainingInterfaces.TrainingPipelines.HiFiGAN_Avocodo import run as hifigan_combined
 from TrainingInterfaces.TrainingPipelines.HiFiGAN_Avocodo_low_RAM import run as hifigan_combined_low_ram
 from TrainingInterfaces.TrainingPipelines.pretrain_aligner import run as aligner
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_libri_all_clean import run as libri
 
 pipeline_dict = {
     "meta":             meta_fast,
@@ -23,6 +24,7 @@ pipeline_dict = {
     "emo":              finetune_model_emotion,
     "control":          control,
     "low_ram_avocodo":  hifigan_combined_low_ram,
+    "libri":            libri,
 }
 
 if __name__ == '__main__':
