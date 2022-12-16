@@ -9,9 +9,19 @@ import torch
 from torchaudio.transforms import Resample
 
 
-class AudioPreprocessor: #
+def to_mono(x):
+    """
+    make sure we deal with a 1D array
+    """
+    if len(x.shape) == 2:
+        return lb.to_mono(numpy.transpose(x))
+    else:
+        return x
 
-    def __init__(self, input_sr, output_sr=None, melspec_buckets=80, hop_length=256, n_fft=1024, cut_silence=False, device="cpu", fmax_for_spec=8000): # sampling rate 8000
+
+class AudioPreprocessor:
+
+    def __init__(self, input_sr, output_sr=None, melspec_buckets=80, hop_length=256, n_fft=1024, cut_silence=False, device="cpu", fmax_for_spec=8000):
         """
         The parameters are by default set up to do well
         on a 16kHz signal. A different sampling rate may
@@ -26,7 +36,7 @@ class AudioPreprocessor: #
         self.hop_length = hop_length
         self.n_fft = n_fft
         self.mel_buckets = melspec_buckets
-        self.meter = pyln.Meter(input_sr) # 查找音频文件的响度 Find the loudness of an audio file 目的是speech to text
+        self.meter = pyln.Meter(input_sr)
         self.final_sr = input_sr
         self.fmax_for_spec = fmax_for_spec
         if cut_silence:
@@ -36,7 +46,7 @@ class AudioPreprocessor: #
                                                       model='silero_vad',
                                                       force_reload=False,
                                                       onnx=False,
-                                                      verbose=False) # 调用silero_vad This repository also includes Number Detector and Language classifier models
+                                                      verbose=False)
             (self.get_speech_timestamps,
              self.save_audio,
              self.read_audio,
@@ -53,7 +63,7 @@ class AudioPreprocessor: #
         else:
             self.resample = lambda x: x
 
-    def cut_silence_from_audio(self, audio): # cut the mid of sound
+    def cut_silence_from_audio(self, audio):
         """
         https://github.com/snakers4/silero-vad
         """
@@ -66,15 +76,6 @@ class AudioPreprocessor: #
             print("Audio might be too short to cut silences from front and back.")
         return audio
 
-    def to_mono(self, x):
-        """
-        make sure we deal with a 1D array
-        """
-        if len(x.shape) == 2:
-            return lb.to_mono(numpy.transpose(x)) # Reduce audio data to mono
-        else:
-            return x
-
     def normalize_loudness(self, audio):
         """
         normalize the amplitudes according to
@@ -82,7 +83,11 @@ class AudioPreprocessor: #
         signal with different magnitudes into
         the same magnitude by analysing loudness
         """
-        loudness = self.meter.integrated_loudness(audio)
+        try:
+            loudness = self.meter.integrated_loudness(audio)
+        except ValueError:
+            # if the audio is too short, a value error will arise
+            return audio
         loud_normed = pyln.normalize.loudness(audio, loudness, -30.0)
         peak = numpy.amax(numpy.abs(loud_normed))
         peak_normed = numpy.divide(loud_normed, peak)
@@ -107,7 +112,7 @@ class AudioPreprocessor: #
         # get mel basis
         fmin = 0 if fmin is None else fmin
         fmax = sampling_rate / 2 if fmax is None else fmax
-        mel_basis = librosa.filters.mel(sampling_rate, self.n_fft, self.mel_buckets, fmin, fmax) # use band filter for mel filter
+        mel_basis = librosa.filters.mel(sr=sampling_rate, n_fft=self.n_fft, n_mels=self.mel_buckets, fmin=fmin, fmax=fmax)
         # apply log and return
         return torch.Tensor(np.log10(np.maximum(eps, np.dot(spc, mel_basis.T)))).transpose(0, 1)
 
@@ -116,7 +121,7 @@ class AudioPreprocessor: #
         one function to apply them all in an
         order that makes sense.
         """
-        audio = self.to_mono(audio)
+        audio = to_mono(audio)
         audio = self.normalize_loudness(audio)
         audio = torch.Tensor(audio).to(self.device)
         audio = self.resample(audio)
@@ -131,7 +136,7 @@ class AudioPreprocessor: #
         cleaned version.
         """
         fig, ax = plt.subplots(nrows=2, ncols=1)
-        unclean_audio_mono = self.to_mono(unclean_audio)
+        unclean_audio_mono = to_mono(unclean_audio)
         unclean_spec = self.audio_to_mel_spec_tensor(unclean_audio_mono, normalize=False).numpy()
         clean_spec = self.audio_to_mel_spec_tensor(unclean_audio_mono, normalize=True).numpy()
         lbd.specshow(unclean_spec, sr=self.sr, cmap='GnBu', y_axis='mel', ax=ax[0], x_axis='time')

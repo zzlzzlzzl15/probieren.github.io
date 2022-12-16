@@ -99,14 +99,14 @@ class ReferenceEncoder(torch.nn.Module):
 
     def __init__(
             self,
-            idim: object = 80,
-            conv_layers: object = 6,
-            conv_chans_list: object = (32, 32, 64, 64, 128, 128),
-            conv_kernel_size: object = 3,
-            conv_stride: object = 2,
-            gru_layers: object = 1,
-            gru_units: object = 128,
-    ) -> object:
+            idim=80,
+            conv_layers: int = 6,
+            conv_chans_list=(32, 32, 64, 64, 128, 128),
+            conv_kernel_size: int = 3,
+            conv_stride: int = 2,
+            gru_layers: int = 1,
+            gru_units: int = 128,
+    ):
         """Initialize reference encoder module."""
         super(ReferenceEncoder, self).__init__()
 
@@ -118,7 +118,7 @@ class ReferenceEncoder(torch.nn.Module):
         convs = []
         padding = (conv_kernel_size - 1) // 2
         for i in range(conv_layers):
-            conv_in_chans = 1 if i == 0 else conv_chans_list[i - 1] # use conv_in_chans = 1 to identity the first layer
+            conv_in_chans = 1 if i == 0 else conv_chans_list[i - 1]
             conv_out_chans = conv_chans_list[i]
             convs += [torch.nn.Conv2d(conv_in_chans,
                                       conv_out_chans,
@@ -139,8 +139,8 @@ class ReferenceEncoder(torch.nn.Module):
         # get the number of GRU input units
         gru_in_units = idim
         for i in range(conv_layers):
-            gru_in_units = (gru_in_units - conv_kernel_size + 2 * padding) // conv_stride + 1 # calculate the length of GRU units number
-        gru_in_units *= conv_out_chans # calculate input length of gru output length of conv_layer
+            gru_in_units = (gru_in_units - conv_kernel_size + 2 * padding) // conv_stride + 1
+        gru_in_units *= conv_out_chans
         self.gru = torch.nn.GRU(gru_in_units, gru_units, gru_layers, batch_first=True)
 
     def forward(self, speech):
@@ -151,7 +151,7 @@ class ReferenceEncoder(torch.nn.Module):
             Tensor: Reference embedding (B, gru_units)
         """
         batch_size = speech.size(0)
-        xs = speech.unsqueeze(1)  # (B, 1, Lmax, idim) add dim at 2nd dim
+        xs = speech.unsqueeze(1)  # (B, 1, Lmax, idim)
         hs = self.convs(xs).transpose(1, 2)  # (B, Lmax', conv_out_chans, idim')
         # NOTE(kan-bayashi): We need to care the length?
         time_length = hs.size(1)
@@ -176,7 +176,6 @@ class StyleTokenLayer(torch.nn.Module):
         gst_heads (int, optional): The number of heads in GST multihead attention.
         dropout_rate (float, optional): Dropout rate in multi-head attention.
     """
-
 
     def __init__(
             self,

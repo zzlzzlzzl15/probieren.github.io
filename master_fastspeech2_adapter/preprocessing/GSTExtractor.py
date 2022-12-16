@@ -4,14 +4,14 @@ import torch.multiprocessing
 from numpy import trim_zeros
 
 from Preprocessing.AudioPreprocessor import AudioPreprocessor
-import TrainingInterfaces.Spectrogram_to_Embedding.StyleEmbedding
+from TrainingInterfaces.Spectrogram_to_Embedding.StyleEmbedding import StyleEmbedding
 
 
 class ProsodicConditionExtractor:
 
     def __init__(self, sr, device=torch.device("cpu"), path_to_model="Models/Embedding/embedding_function.pt"):
         self.ap = AudioPreprocessor(input_sr=sr, output_sr=16000, melspec_buckets=80, hop_length=256, n_fft=1024, cut_silence=False)
-        self.embed = TrainingInterfaces.Spectrogram_to_Embedding.StyleEmbedding.StyleEmbedding()
+        self.embed = StyleEmbedding()
         check_dict = torch.load(path_to_model, map_location="cpu")
         self.embed.load_state_dict(check_dict["style_emb_func"])
         self.embed.to(device)

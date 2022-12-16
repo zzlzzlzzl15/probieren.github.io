@@ -49,14 +49,14 @@ class StyleEmbedding(torch.nn.Module):
             current_spec_length = spec_length.cpu().item()
             if current_spec_length < window_size:
                 # make it longer
-                repeat_factor = math.ceil((window_size * 2) / spec_length) # fill up window_size not enough to 256
+                repeat_factor = math.ceil((window_size * 2) / spec_length)
                 spec = spec.repeat((repeat_factor, 1))
                 current_spec_length = len(spec)
             if current_spec_length > window_size:
                 # take random window
                 frames_to_remove = current_spec_length - window_size
-                remove_front = numpy.random.randint(low=0, high=frames_to_remove) # remove from random highest frames_to_remove number
-                list_of_specs.append(spec[remove_front:remove_front + window_size]) # frame start from random start stop at window size
+                remove_front = numpy.random.randint(low=0, high=frames_to_remove)
+                list_of_specs.append(spec[remove_front:remove_front + window_size])
             elif current_spec_length == window_size:
                 # take as is
                 list_of_specs.append(spec)
