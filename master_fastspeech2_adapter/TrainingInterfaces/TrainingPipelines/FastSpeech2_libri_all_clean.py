@@ -1,5 +1,6 @@
 import os
 import time
+import random
 
 import torch
 import wandb
@@ -8,8 +9,9 @@ from torch.utils.data import ConcatDataset
 from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.FastSpeech2 import FastSpeech2
 from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.fastspeech2_train_loop import train_loop
 from Utility.corpus_preparation import prepare_fastspeech_corpus
-from Utility.path_to_transcript_dicts import *
+from Utility.path_to_transcript_dicts import build_path_to_transcript_dict_libritts_all_clean
 from Utility.storage_config import MODELS_DIR, PREPROCESSING_DIR
+
 
 
 def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb_resume_id):
@@ -36,8 +38,8 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
 
     datasets = list()
 
-    datasets.append(prepare_fastspeech_corpus(transcript_dict={},
-                                              corpus_dir=os.path.join("/mount/resources/speech/corpora/LibriTTS/all_clean"),
+    datasets.append(prepare_fastspeech_corpus(transcript_dict=build_path_to_transcript_dict_libritts_all_clean(),
+                                              corpus_dir=os.path.join(PREPROCESSING_DIR, "libri_all_clean"),
                                               lang="en"))
 
 
@@ -60,6 +62,7 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
                epochs_per_save=1,
                warmup_steps=4000,
                path_to_checkpoint=resume_checkpoint,
+               path_to_embed_model=os.path.join(MODELS_DIR, "Embedding", "embedding_function.pt"),
                fine_tune=finetune,
                resume=resume,
                phase_1_steps=150000,

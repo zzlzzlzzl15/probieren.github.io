@@ -160,7 +160,7 @@ class AlignerDatasetBuilder(Dataset):
                     print(f"Excluding {path} because of its duration of {round(dur_in_seconds, 2)} seconds.")
                 continue
             norm_wave = torch.tensor(trim_zeros(norm_wave.numpy()))
-            # raw audio preprocessing is done
+            # raw audio Preprocessing is done
             transcript = self.path_to_transcript_dict[path]
             try:
                 cached_text = tf.string_to_tensor(transcript, handle_missing=False, input_phonemes=phone_input).squeeze(0).cpu().numpy()
