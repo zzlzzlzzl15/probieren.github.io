@@ -56,11 +56,11 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
                      lang="en",
                      lr=0.001,
                      epochs_per_save=1,
-                     warmup_steps=500,
+                     warmup_steps=4000,
                      path_to_checkpoint=resume_checkpoint,
                      fine_tune=finetune,
                      resume=resume,
-                     steps=1000,
+                     steps=150000,
                      use_wandb=use_wandb)
     print("Training model")
     tts_train_loop(net=model,
@@ -71,13 +71,13 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
                    lang="en",
                    lr=0.001,
                    epochs_per_save=1,
-                   warmup_steps=500,
+                   warmup_steps=4000,
                    path_to_checkpoint=resume_checkpoint,
                    path_to_embed_model=os.path.join(save_dir, "embedding_function.pt"),
                    fine_tune=finetune,
                    resume=resume,
-                   phase_1_steps=500,
-                   phase_2_steps=500,
+                   phase_1_steps=150000,
+                   phase_2_steps=50000,
                    use_wandb=use_wandb)
 
     if use_wandb:
