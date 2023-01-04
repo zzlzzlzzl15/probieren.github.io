@@ -4,7 +4,7 @@ This is the setup with which the embedding model is trained. After the embedding
 
 import os
 import time
-
+import random
 import torch
 import wandb
 from torch.utils.data import ConcatDataset
@@ -12,7 +12,7 @@ from torch.utils.data import ConcatDataset
 from TrainingInterfaces.Spectrogram_to_Embedding.embedding_function_train_loop import train_loop
 from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.FastSpeech2 import FastSpeech2
 from Utility.corpus_preparation import prepare_fastspeech_corpus
-from Utility.path_to_transcript_dicts import *
+from Utility.path_to_transcript_dicts import build_path_to_transcript_dict_libritts_all_clean
 from Utility.storage_config import MODELS_DIR, PREPROCESSING_DIR
 
 
@@ -35,38 +35,22 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
     if model_dir is not None:
         save_dir = model_dir
     else:
-        save_dir = os.path.join(MODELS_DIR, "FastSpeech2_Embedding")
+        save_dir = os.path.join(MODELS_DIR, "FastSpeech2_libri_all_clean_2")
     os.makedirs(save_dir, exist_ok=True)
 
     datasets = list()
-    datasets.append(prepare_fastspeech_corpus(transcript_dict={},
-                                              corpus_dir=os.path.join(PREPROCESSING_DIR, "ravdess"),
-                                              lang="en",
-                                              ctc_selection=False))
 
-    datasets.append(prepare_fastspeech_corpus(transcript_dict={},
-                                              corpus_dir=os.path.join(PREPROCESSING_DIR, "esds"),
-                                              lang="en",
-                                              ctc_selection=False))
 
-    datasets.append(prepare_fastspeech_corpus(transcript_dict={},
-                                              corpus_dir=os.path.join(PREPROCESSING_DIR, "libri_all_clean"),
-                                              lang="en"))
+    train_set = prepare_fastspeech_corpus(transcript_dict=build_path_to_transcript_dict_libritts_all_clean(),
+                                          corpus_dir=os.path.join(PREPROCESSING_DIR, "libri"),
+                                          lang="en",
+                                          save_imgs=True)
 
-    datasets.append(prepare_fastspeech_corpus(transcript_dict={},
-                                              corpus_dir=os.path.join(PREPROCESSING_DIR, "Nancy"),
-                                              lang="en"))
 
-    datasets.append(prepare_fastspeech_corpus(transcript_dict={},
-                                              corpus_dir=os.path.join(PREPROCESSING_DIR, "LJSpeech"),
-                                              lang="en"))
 
-    # for the next iteration, we should add an augmented noisy version of e.g. Nancy,
-    # so the embedding learns to factor out noise
 
-    train_set = ConcatDataset(datasets)
 
-    model = FastSpeech2(lang_embs=None)
+    model = FastSpeech2()
     if use_wandb:
         wandb.init(
             name=f"{__name__.split('.')[-1]}_{time.strftime('%Y%m%d-%H%M%S')}" if wandb_resume_id is None else None,
@@ -77,7 +61,7 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
                train_dataset=train_set,
                device=device,
                save_directory=save_dir,
-               batch_size=32,
+               batch_size=8,
                lang="en",
                lr=0.001,
                epochs_per_save=1,
