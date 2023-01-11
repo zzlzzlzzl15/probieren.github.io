@@ -11,15 +11,15 @@ from Layers.DurationPredictor import DurationPredictor
 from Layers.LengthRegulator import LengthRegulator
 from Layers.PostNet import PostNet
 from Layers.VariancePredictor import VariancePredictor
+from Layers.adapter import get_adapter
 from Preprocessing.articulatory_features import get_feature_to_index_lookup
 from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.FastSpeech2Loss import FastSpeech2Loss
 from Utility.utils import initialize
 from Utility.utils import make_non_pad_mask
 from Utility.utils import make_pad_mask
-from Layers.adapter import get_adapter
-from Layers.adapter import feedforward_adapter
 
-class FastSpeech2(torch.nn.Module, ABC):
+
+class FastSpeech2(torch.nn.Module, ABC, adapter_fn=None):
     """
     FastSpeech 2 module.
 
@@ -62,6 +62,11 @@ class FastSpeech2(torch.nn.Module, ABC):
                  use_cnn_in_conformer=True,
                  conformer_enc_kernel_size=7,
                  conformer_dec_kernel_size=31,
+                 # adapter layer
+                 hidden_size=64,
+                 init_scale=1e-3,
+                 fn = "feedforward_adapter"
+                 freeze_except_adapter = False
                  # duration predictor
                  duration_predictor_layers=2,
                  duration_predictor_chans=256,
@@ -111,6 +116,7 @@ class FastSpeech2(torch.nn.Module, ABC):
         self.use_scaled_pos_enc = use_scaled_pos_enc
         self.multilingual_model = lang_embs is not None
         self.multispeaker_model = utt_embed_dim is not None
+        self.freeze_except_adapter = freeze_except_adapter
 
         # define encoder
         embed = torch.nn.Sequential(torch.nn.Linear(idim, 100),
@@ -123,6 +129,8 @@ class FastSpeech2(torch.nn.Module, ABC):
                                  positionwise_conv_kernel_size=positionwise_conv_kernel_size, macaron_style=use_macaron_style_in_conformer,
                                  use_cnn_module=use_cnn_in_conformer, cnn_module_kernel=conformer_enc_kernel_size, zero_triu=False,
                                  utt_embed=utt_embed_dim, lang_embs=lang_embs)
+
+
 
         # define duration predictor
         self.duration_predictor = DurationPredictor(idim=adim, n_layers=duration_predictor_layers, n_chans=duration_predictor_chans,
@@ -218,6 +226,12 @@ class FastSpeech2(torch.nn.Module, ABC):
             return loss, after_outs
         return loss
 
+    def layer_norm(input_tensor, name=None):
+        """Run layer normalization on the last dimension of the tensor."""
+        return tf.contrib.layers.layer_norm(
+            inputs=input_tensor, begin_norm_axis=-1, begin_params_axis=-1, scope=name,
+            variables_collections=["layer_norm", tf.GraphKeys.GLOBAL_VARIABLES])
+
     def _forward(self,
                  text_tensors,
                  text_lens,
@@ -230,61 +244,129 @@ class FastSpeech2(torch.nn.Module, ABC):
                  alpha=1.0,
                  utterance_embedding=None,
                  lang_ids=None):
+        if not self.freeze_except_adapter:
 
-        if not self.multilingual_model:
-            lang_ids = None
+            if not self.multilingual_model:
+                lang_ids = None
 
-        if not self.multispeaker_model:
-            utterance_embedding = None
+            if not self.multispeaker_model:
+                utterance_embedding = None
 
-        # forward encoder
-        text_masks = self._source_mask(text_lens)
+            # forward encoder
+            text_masks = self._source_mask(text_lens)
 
-        encoded_texts, _ = self.encoder(text_tensors, text_masks, utterance_embedding=utterance_embedding, lang_ids=lang_ids)  # (B, Tmax, adim)
+            encoded_texts, _ = self.encoder(text_tensors, text_masks, utterance_embedding=utterance_embedding, lang_ids=lang_ids)  # (B, Tmax, adim)
 
-        # forward duration predictor and variance predictors
-        d_masks = make_pad_mask(text_lens, device=text_lens.device)
+            # added adapter
+            adapter_fn = get_adapter(fn)
+            adapter_texts = adapter_fn(attention_output)
+            encoded_texts = layer_norm(adapter_texts + encoded_texts)
 
-        if self.stop_gradient_from_pitch_predictor:
-            pitch_predictions = self.pitch_predictor(encoded_texts.detach(), d_masks.unsqueeze(-1))
-        else:
-            pitch_predictions = self.pitch_predictor(encoded_texts, d_masks.unsqueeze(-1))
+            # forward duration predictor and variance predictors
+            d_masks = make_pad_mask(text_lens, device=text_lens.device)
 
-        if self.stop_gradient_from_energy_predictor:
-            energy_predictions = self.energy_predictor(encoded_texts.detach(), d_masks.unsqueeze(-1))
-        else:
-            energy_predictions = self.energy_predictor(encoded_texts, d_masks.unsqueeze(-1))
-
-        if is_inference:
-            d_outs = self.duration_predictor.inference(encoded_texts, d_masks)  # (B, Tmax)
-            # use prediction in inference
-            p_embs = self.pitch_embed(pitch_predictions.transpose(1, 2)).transpose(1, 2)
-            e_embs = self.energy_embed(energy_predictions.transpose(1, 2)).transpose(1, 2)
-            encoded_texts = encoded_texts + e_embs + p_embs
-            encoded_texts = self.length_regulator(encoded_texts, d_outs, alpha)  # (B, Lmax, adim)
-        else:
-            d_outs = self.duration_predictor(encoded_texts, d_masks)
-
-            # use groundtruth in training
-            p_embs = self.pitch_embed(gold_pitch.transpose(1, 2)).transpose(1, 2)
-            e_embs = self.energy_embed(gold_energy.transpose(1, 2)).transpose(1, 2)
-            encoded_texts = encoded_texts + e_embs + p_embs
-            encoded_texts = self.length_regulator(encoded_texts, gold_durations)  # (B, Lmax, adim)
-
-        # forward decoder
-        if speech_lens is not None and not is_inference:
-            if self.reduction_factor > 1:
-                olens_in = speech_lens.new([olen // self.reduction_factor for olen in speech_lens])
+            if self.stop_gradient_from_pitch_predictor:
+                pitch_predictions = self.pitch_predictor(encoded_texts.detach(), d_masks.unsqueeze(-1))
             else:
-                olens_in = speech_lens
-            h_masks = self._source_mask(olens_in)
-        else:
-            h_masks = None
-        zs, _ = self.decoder(encoded_texts, h_masks)  # (B, Lmax, adim)
-        before_outs = self.feat_out(zs).view(zs.size(0), -1, self.odim)  # (B, Lmax, odim)
+                pitch_predictions = self.pitch_predictor(encoded_texts, d_masks.unsqueeze(-1))
 
-        # postnet -> (B, Lmax//r * r, odim)
-        after_outs = before_outs + self.postnet(before_outs.transpose(1, 2)).transpose(1, 2)
+            if self.stop_gradient_from_energy_predictor:
+                energy_predictions = self.energy_predictor(encoded_texts.detach(), d_masks.unsqueeze(-1))
+            else:
+                energy_predictions = self.energy_predictor(encoded_texts, d_masks.unsqueeze(-1))
+
+            if is_inference:
+                d_outs = self.duration_predictor.inference(encoded_texts, d_masks)  # (B, Tmax)
+                # use prediction in inference
+                p_embs = self.pitch_embed(pitch_predictions.transpose(1, 2)).transpose(1, 2)
+                e_embs = self.energy_embed(energy_predictions.transpose(1, 2)).transpose(1, 2)
+                encoded_texts = encoded_texts + e_embs + p_embs
+                encoded_texts = self.length_regulator(encoded_texts, d_outs, alpha)  # (B, Lmax, adim)
+            else:
+                d_outs = self.duration_predictor(encoded_texts, d_masks)
+
+                # use groundtruth in training
+                p_embs = self.pitch_embed(gold_pitch.transpose(1, 2)).transpose(1, 2)
+                e_embs = self.energy_embed(gold_energy.transpose(1, 2)).transpose(1, 2)
+                encoded_texts = encoded_texts + e_embs + p_embs
+                encoded_texts = self.length_regulator(encoded_texts, gold_durations)  # (B, Lmax, adim)
+
+            # forward decoder
+            if speech_lens is not None and not is_inference:
+                if self.reduction_factor > 1:
+                    olens_in = speech_lens.new([olen // self.reduction_factor for olen in speech_lens])
+                else:
+                    olens_in = speech_lens
+                h_masks = self._source_mask(olens_in)
+            else:
+                h_masks = None
+            zs, _ = self.decoder(encoded_texts, h_masks)  # (B, Lmax, adim)
+            before_outs = self.feat_out(zs).view(zs.size(0), -1, self.odim)  # (B, Lmax, odim)
+
+            # postnet -> (B, Lmax//r * r, odim)
+            after_outs = before_outs + self.postnet(before_outs.transpose(1, 2)).transpose(1, 2)
+
+        elif self.freeze_except_adapter:
+            if not self.multilingual_model:
+                lang_ids = None
+
+            if not self.multispeaker_model:
+                utterance_embedding = None
+
+            # forward encoder
+            text_masks = self._source_mask(text_lens)
+
+            encoded_texts, _ = self.encoder(text_tensors.detach(), text_masks, utterance_embedding=utterance_embedding,
+                                            lang_ids=lang_ids)  # (B, Tmax, adim)
+
+            # added adapter
+            adapter_fn = get_adapter(fn)
+            adapter_texts = adapter_fn(attention_output)
+            encoded_texts = layer_norm(adapter_texts + encoded_texts)
+
+            # forward duration predictor and variance predictors
+            d_masks = make_pad_mask(text_lens, device=text_lens.device)
+
+            if self.stop_gradient_from_pitch_predictor:
+                pitch_predictions = self.pitch_predictor(encoded_texts.detach(), d_masks.unsqueeze(-1))
+            else:
+                pitch_predictions = self.pitch_predictor(encoded_texts.detach(), d_masks.unsqueeze(-1))
+
+            if self.stop_gradient_from_energy_predictor:
+                energy_predictions = self.energy_predictor(encoded_texts.detach(), d_masks.unsqueeze(-1))
+            else:
+                energy_predictions = self.energy_predictor(encoded_texts.detach(), d_masks.unsqueeze(-1))
+
+            if is_inference:
+                d_outs = self.duration_predictor.inference(encoded_texts.detach(), d_masks)  # (B, Tmax)
+                # use prediction in inference
+                p_embs = self.pitch_embed(pitch_predictions.transpose(1, 2).detach()).transpose(1, 2)
+                e_embs = self.energy_embed(energy_predictions.transpose(1, 2).detach()).transpose(1, 2)
+                encoded_texts = encoded_texts + e_embs + p_embs
+                encoded_texts = self.length_regulator(encoded_texts, d_outs, alpha)  # (B, Lmax, adim)
+            else:
+                d_outs = self.duration_predictor(encoded_texts.detach(), d_masks)
+
+                # use groundtruth in training
+                p_embs = self.pitch_embed(gold_pitch.transpose(1, 2).detach()).transpose(1, 2)
+                e_embs = self.energy_embed(gold_energy.transpose(1, 2).detach()).transpose(1, 2)
+                encoded_texts = encoded_texts + e_embs + p_embs
+                encoded_texts = self.length_regulator(encoded_texts.detach(), gold_durations)  # (B, Lmax, adim)
+
+            # forward decoder
+            if speech_lens is not None and not is_inference:
+                if self.reduction_factor > 1:
+                    olens_in = speech_lens.new([olen // self.reduction_factor for olen in speech_lens])
+                else:
+                    olens_in = speech_lens
+                h_masks = self._source_mask(olens_in)
+            else:
+                h_masks = None
+            zs, _ = self.decoder(encoded_texts.detach(), h_masks)  # (B, Lmax, adim)
+            before_outs = self.feat_out(zs).view(zs.size(0), -1, self.odim)  # (B, Lmax, odim)
+
+            # postnet -> (B, Lmax//r * r, odim)
+            after_outs = before_outs + self.postnet(before_outs.transpose(1, 2).detach()).transpose(1, 2)
 
         return before_outs, after_outs, d_outs, pitch_predictions, energy_predictions
 
