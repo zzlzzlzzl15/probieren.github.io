@@ -12,6 +12,7 @@ from TrainingInterfaces.TrainingPipelines.HiFiGAN_Avocodo import run as hifigan_
 from TrainingInterfaces.TrainingPipelines.HiFiGAN_Avocodo_low_RAM import run as hifigan_combined_low_ram
 from TrainingInterfaces.TrainingPipelines.pretrain_aligner import run as aligner
 from TrainingInterfaces.TrainingPipelines.FastSpeech2_libri_all_clean import run as libri
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_LJspeech import run as LJspeech_adapter
 
 pipeline_dict = {
     "meta":             meta_fast,
@@ -25,6 +26,7 @@ pipeline_dict = {
     "control":          control,
     "low_ram_avocodo":  hifigan_combined_low_ram,
     "libri":            libri,
+    "LJspeech_adapter": LJspeech_adapter,
 }
 
 if __name__ == '__main__':

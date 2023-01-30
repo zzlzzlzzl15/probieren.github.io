@@ -11,7 +11,8 @@ from Layers.DurationPredictor import DurationPredictor
 from Layers.LengthRegulator import LengthRegulator
 from Layers.PostNet import PostNet
 from Layers.VariancePredictor import VariancePredictor
-from Layers.adapter import get_adapter
+from Layers.adapter import adapter
+
 from Preprocessing.articulatory_features import get_feature_to_index_lookup
 from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.FastSpeech2Loss import FastSpeech2Loss
 from Utility.utils import initialize
@@ -19,7 +20,9 @@ from Utility.utils import make_non_pad_mask
 from Utility.utils import make_pad_mask
 
 
-class FastSpeech2(torch.nn.Module, ABC, adapter_fn=None):
+
+
+class FastSpeech2(torch.nn.Module, ABC):
     """
     FastSpeech 2 module.
 
@@ -65,8 +68,8 @@ class FastSpeech2(torch.nn.Module, ABC, adapter_fn=None):
                  # adapter layer
                  hidden_size=64,
                  init_scale=1e-3,
-                 fn = "feedforward_adapter"
-                 freeze_except_adapter = False
+                 fn = "feedforward_adapter",
+                 freeze_except_adapter = True,
                  # duration predictor
                  duration_predictor_layers=2,
                  duration_predictor_chans=256,
@@ -117,6 +120,10 @@ class FastSpeech2(torch.nn.Module, ABC, adapter_fn=None):
         self.multilingual_model = lang_embs is not None
         self.multispeaker_model = utt_embed_dim is not None
         self.freeze_except_adapter = freeze_except_adapter
+        self.fn = fn
+        self.hidden_size = hidden_size
+        self.init_scale = init_scale
+        self.adapter_model = adapter()
 
         # define encoder
         embed = torch.nn.Sequential(torch.nn.Linear(idim, 100),
@@ -175,6 +182,13 @@ class FastSpeech2(torch.nn.Module, ABC, adapter_fn=None):
         # define criterion
         self.criterion = FastSpeech2Loss(use_masking=use_masking, use_weighted_masking=use_weighted_masking)
 
+        #define layer_norm
+        self.eps = 1e-12
+
+
+
+
+
     def forward(self,
                 text_tensors,
                 text_lengths,
@@ -226,11 +240,7 @@ class FastSpeech2(torch.nn.Module, ABC, adapter_fn=None):
             return loss, after_outs
         return loss
 
-    def layer_norm(input_tensor, name=None):
-        """Run layer normalization on the last dimension of the tensor."""
-        return tf.contrib.layers.layer_norm(
-            inputs=input_tensor, begin_norm_axis=-1, begin_params_axis=-1, scope=name,
-            variables_collections=["layer_norm", tf.GraphKeys.GLOBAL_VARIABLES])
+
 
     def _forward(self,
                  text_tensors,
@@ -258,9 +268,12 @@ class FastSpeech2(torch.nn.Module, ABC, adapter_fn=None):
             encoded_texts, _ = self.encoder(text_tensors, text_masks, utterance_embedding=utterance_embedding, lang_ids=lang_ids)  # (B, Tmax, adim)
 
             # added adapter
-            adapter_fn = get_adapter(fn)
-            adapter_texts = adapter_fn(attention_output)
-            encoded_texts = layer_norm(adapter_texts + encoded_texts)
+            adapter_fn = self.adapter_model.get_adapter(self.fn)
+            adapter_texts = adapter_fn(encoded_texts)
+            adapter_out = adapter_texts + encoded_texts
+            self.norm = torch.nn.LayerNorm(eps=self.eps,
+                                               normalized_shape=adapter_out.size()[0:], elementwise_affine =True).to(device=encoded_texts.device)
+            encoded_texts = self.norm(adapter_out)
 
             # forward duration predictor and variance predictors
             d_masks = make_pad_mask(text_lens, device=text_lens.device)
@@ -320,9 +333,14 @@ class FastSpeech2(torch.nn.Module, ABC, adapter_fn=None):
                                             lang_ids=lang_ids)  # (B, Tmax, adim)
 
             # added adapter
-            adapter_fn = get_adapter(fn)
-            adapter_texts = adapter_fn(attention_output)
-            encoded_texts = layer_norm(adapter_texts + encoded_texts)
+            adapter_fn = self.adapter_model.get_adapter(self.fn)
+            adapter_texts = adapter_fn(encoded_texts)
+            adapter_out = adapter_texts + encoded_texts
+            self.norm = torch.nn.LayerNorm(eps=self.eps,
+                                           normalized_shape=adapter_out.size()[0:], elementwise_affine=True).to(
+                device=encoded_texts.device)
+            encoded_texts = self.norm(adapter_out)
+
 
             # forward duration predictor and variance predictors
             d_masks = make_pad_mask(text_lens, device=text_lens.device)

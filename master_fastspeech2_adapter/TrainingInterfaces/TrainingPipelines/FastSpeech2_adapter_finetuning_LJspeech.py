@@ -3,6 +3,7 @@ import time
 
 import torch
 import wandb
+import random
 from torch.utils.data import ConcatDataset
 
 from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.FastSpeech2_adapter import FastSpeech2
@@ -53,8 +54,8 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
                train_dataset=train_set,
                device=device,
                save_directory=save_dir,
-               batch_size=12,  # YOU MIGHT GET OUT OF MEMORY ISSUES ON SMALL GPUs, IF SO, DECREASE THIS
-               lang="de",  # CHANGE THIS TO THE LANGUAGE YOU'RE TRAINING ON
+               batch_size=8,  # YOU MIGHT GET OUT OF MEMORY ISSUES ON SMALL GPUs, IF SO, DECREASE THIS
+               lang="en",  # CHANGE THIS TO THE LANGUAGE YOU'RE TRAINING ON
                lr=0.001,
                epochs_per_save=1,
                warmup_steps=4000,
