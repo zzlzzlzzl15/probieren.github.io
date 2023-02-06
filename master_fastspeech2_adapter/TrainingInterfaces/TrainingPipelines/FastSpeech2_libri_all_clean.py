@@ -7,7 +7,7 @@ import random
 
 from TrainingInterfaces.Spectrogram_to_Embedding.embedding_function_train_loop import train_loop as embed_train_loop
 from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.FastSpeech2 import FastSpeech2
-from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.fastspeech2_train_loop import train_loop as tts_train_loop
+from TrainingInterfaces.Text_to_Spectrogram.FastSpeech2.fastspeech2_adapter_train_loop import train_loop as tts_train_loop
 from Utility.corpus_preparation import prepare_fastspeech_corpus
 from Utility.path_to_transcript_dicts import build_path_to_transcript_dict_libritts_all_clean
 from Utility.storage_config import MODELS_DIR, PREPROCESSING_DIR
@@ -33,7 +33,7 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
     if model_dir is not None:
         save_dir = model_dir
     else:
-        save_dir = os.path.join(MODELS_DIR, "FastSpeech2_libri_all_clean_2")
+        save_dir = os.path.join(MODELS_DIR, "FastSpeech2_libri_all_clean_3")
     os.makedirs(save_dir, exist_ok=True)
 
     train_set = prepare_fastspeech_corpus(transcript_dict=build_path_to_transcript_dict_libritts_all_clean(),

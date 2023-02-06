@@ -64,8 +64,8 @@ if __name__ == '__main__':
     exec_device = "cuda" if torch.cuda.is_available() else "cpu"
     os.makedirs("audios", exist_ok=True)
 
-    read_texts(model_id="Controllable",
+    read_texts(model_id="libri_all_clean_2",
                sentence="This is a sentence meant for testing, whether the new vocoder works the way I hope it does!",
-               filename="audios/12.wav",
+               filename="audios/libri_all_clean_2.wav",
                device=exec_device,
                language="en")

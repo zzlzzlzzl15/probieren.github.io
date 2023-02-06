@@ -223,7 +223,7 @@ def train_loop(net,
                                                           gold_durations=batch[4].to(device),
                                                           gold_pitch=batch[6].to(device),  # mind the switched order
                                                           gold_energy=batch[5].to(device),  # mind the switched order
-                                                          utterance_embedding=style_embedding_of_gold.detach(),
+                                                          utterance_embedding=style_embedding_of_gold,
                                                           lang_ids=batch[8].to(device),
                                                           return_mels=True)
                     style_embedding_function.train()
