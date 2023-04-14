@@ -104,12 +104,12 @@ def make_best_in_all(n=3):
                     continue
                 averaged_model, _ = average_checkpoints(checkpoint_paths, load_func=load_net_hifigan)
                 save_model_for_use(model=averaged_model, name=os.path.join(MODELS_DIR, model_dir, "best.pt"), dict_name="generator")
-            elif "FastSpeech2_libri_all_clean_adapter_LJspeech" in model_dir:
+            elif "FastSpeech2_libri_all_clean_2" in model_dir:
                 checkpoint_paths = get_n_recent_checkpoints_paths(checkpoint_dir=os.path.join(MODELS_DIR, model_dir), n=n)
                 if checkpoint_paths is None:
                     continue
                 averaged_model, default_embed = average_checkpoints(checkpoint_paths, load_func=load_net_fast)
-                save_model_for_use(model=averaged_model, default_embed=default_embed, name=os.path.join(MODELS_DIR, model_dir, "best.pt"))
+                save_model_for_use(model=averaged_model, default_embed=default_embed, name=os.path.join(MODELS_DIR, model_dir, "best_finetune.pt"))
 
 
 def count_parameters(net):

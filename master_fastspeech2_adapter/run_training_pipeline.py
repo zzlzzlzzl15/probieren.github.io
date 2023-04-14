@@ -14,6 +14,13 @@ from TrainingInterfaces.TrainingPipelines.pretrain_aligner import run as aligner
 from TrainingInterfaces.TrainingPipelines.FastSpeech2_libri_all_clean import run as libri
 from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_LJspeech import run as LJspeech_adapter
 from TrainingInterfaces.TrainingPipelines.FastSpeech2_LJspeech import run as LJSpeech
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit import run as BitFit
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_LJspeech import run as finetuning_LJspeech
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_pruning_LJspeech import run as pruning_LJspeech
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_LJspeech import run as diff_pruning_LJspeech
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p226 import run as vctk_p226_adapter
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p226 import run as BitFit_vctk_p226
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p226 import run as diff_pruning_vctk_p226
 
 pipeline_dict = {
     "meta":             meta_fast,
@@ -28,7 +35,14 @@ pipeline_dict = {
     "low_ram_avocodo":  hifigan_combined_low_ram,
     "libri":            libri,
     "LJspeech_adapter": LJspeech_adapter,
-    "LJSpeech":         LJSpeech
+    "LJSpeech":         LJSpeech,
+    "BitFit":           BitFit,
+    "finetuning_LJspeech": finetuning_LJspeech,
+    "pruning_LJspeech": pruning_LJspeech,
+    "diff_pruning_LJspeech": diff_pruning_LJspeech,
+    "vctk_p226_adapter": vctk_p226_adapter,
+    "BitFit_vctk_p226" : BitFit_vctk_p226,
+    "diff_pruning_vctk_p226" : diff_pruning_vctk_p226,
 }
 
 if __name__ == '__main__':
