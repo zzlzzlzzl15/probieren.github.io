@@ -13,6 +13,7 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data.dataloader import DataLoader
 from tqdm import tqdm
 
+
 from Preprocessing.TextFrontend import ArticulatoryCombinedTextFrontend
 from Preprocessing.TextFrontend import get_language_id
 from TrainingInterfaces.Spectrogram_to_Embedding.StyleEmbedding import StyleEmbedding
@@ -20,7 +21,8 @@ from Utility.WarmupScheduler import WarmupScheduler
 from Utility.utils import cumsum_durations
 from Utility.utils import delete_old_checkpoints
 from Utility.utils import get_most_recent_checkpoint
-from Utility.storage_config import MODELS_DIR
+
+import torch.nn.utils.prune as prune
 
 
 @torch.no_grad()
@@ -119,7 +121,7 @@ def train_loop(net,
                lr=0.0001,
                warmup_steps=4000,
                path_to_checkpoint=None,
-               path_to_embed_model=os.path.join(MODELS_DIR, "Embedding", "embedding_function.pt"),
+               path_to_embed_model="Models/Embedding/embedding_function.pt",
                fine_tune=False,
                resume=False,
                phase_1_steps=100000,
@@ -206,6 +208,16 @@ def train_loop(net,
                                      return_mels=False)
                     train_losses_this_epoch.append(train_loss.item())
 
+                    for name_1, par in net.named_parameters():
+                        if "weight" in name_1:
+                            # print(name[-7:])
+
+                            for name_model, par_model in net.named_modules():
+                                if name_1[:-7] == name_model and name_1[:16] == "encoder.encoders":
+                                    prune.ln_structured(par_model, name=name_model, amount=0.8, n=2, dim=0)
+
+
+
                 else:
                     # ================================================
                     # = PHASE 2:     cycle objective is added        =
@@ -241,6 +253,14 @@ def train_loop(net,
                     train_losses_this_epoch.append(train_loss.item())
                     cycle_losses_this_epoch.append(cycle_dist.item())
                     train_loss = train_loss + cycle_dist
+
+                    for name_1, par in net.named_parameters():
+                        if "weight" in name_1:
+                            # print(name[-7:])
+
+                            for name_model, par_model in net.named_modules():
+                                if name_1[:-7] == name_model and name_1[:16] == "encoder.encoders":
+                                    prune.ln_structured(par_model, name=name_model, amount=0.8, n=2, dim=0)
 
             optimizer.zero_grad()
 
