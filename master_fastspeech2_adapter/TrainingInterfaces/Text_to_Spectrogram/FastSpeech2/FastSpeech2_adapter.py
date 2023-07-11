@@ -334,8 +334,8 @@ class FastSpeech2(torch.nn.Module, ABC):
 
             # added adapter
             adapter_fn = self.adapter_model.get_adapter(self.fn)
-            adapter_texts = adapter_fn(encoded_texts)
-            adapter_out = adapter_texts + encoded_texts
+            adapter_texts = adapter_fn(encoded_texts.detach())
+            adapter_out = adapter_texts + encoded_texts.detach()
             self.norm = torch.nn.LayerNorm(eps=self.eps,
                                            normalized_shape=adapter_out.size()[0:], elementwise_affine=True).to(
                 device=encoded_texts.device)
@@ -380,8 +380,8 @@ class FastSpeech2(torch.nn.Module, ABC):
                 h_masks = self._source_mask(olens_in)
             else:
                 h_masks = None
-            zs, _ = self.decoder(encoded_texts.detach(), h_masks)  # (B, Lmax, adim)
-            before_outs = self.feat_out(zs).view(zs.size(0), -1, self.odim)  # (B, Lmax, odim)
+            zs, _ = self.decoder(encoded_texts.detach(), h_masks).detach()  # (B, Lmax, adim)
+            before_outs = self.feat_out(zs).view(zs.size(0), -1, self.odim).detach()  # (B, Lmax, odim)
 
             # postnet -> (B, Lmax//r * r, odim)
             after_outs = before_outs + self.postnet(before_outs.transpose(1, 2).detach()).transpose(1, 2)

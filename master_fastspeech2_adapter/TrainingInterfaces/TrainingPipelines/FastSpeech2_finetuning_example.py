@@ -59,7 +59,7 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
                lang="de",  # CHANGE THIS TO THE LANGUAGE YOU'RE TRAINING ON
                lr=0.001,
                epochs_per_save=1,
-               warmup_steps=4000,
+               warmup_steps=10,
                # DOWNLOAD THIS INITIALIZATION MODELS FROM THE RELEASE PAGE OF THE GITHUB
                path_to_checkpoint=os.path.join(MODELS_DIR, "FastSpeech2_Meta", "best.pt") if resume_checkpoint is None else resume_checkpoint,
                path_to_embed_model=os.path.join(MODELS_DIR, "Embedding", "embedding_function.pt"),

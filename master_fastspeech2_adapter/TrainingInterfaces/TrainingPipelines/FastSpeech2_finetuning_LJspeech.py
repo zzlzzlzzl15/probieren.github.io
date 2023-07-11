@@ -33,7 +33,7 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
     if model_dir is not None:
         save_dir = model_dir
     else:
-        save_dir = os.path.join(MODELS_DIR, "FastSpeech2_pruning_LJspeech")  # KEEP THE 'FastSpeech2_' BUT CHANGE THE MODEL ID TO SOMETHING MEANINGFUL FOR YOUR DATA
+        save_dir = os.path.join(MODELS_DIR, "FastSpeech2_finetuning_LJspeech")  # KEEP THE 'FastSpeech2_' BUT CHANGE THE MODEL ID TO SOMETHING MEANINGFUL FOR YOUR DATA
     os.makedirs(save_dir, exist_ok=True)
 
     datasets = list()
@@ -60,7 +60,7 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
                lang="en",  # CHANGE THIS TO THE LANGUAGE YOU'RE TRAINING ON
                lr=0.001,
                epochs_per_save=1,
-               warmup_steps=4000,
+               warmup_steps=10,
                # DOWNLOAD THIS INITIALIZATION MODELS FROM THE RELEASE PAGE OF THE GITHUB
                path_to_checkpoint=os.path.join(MODELS_DIR, "FastSpeech2_libri_all_clean_2", "checkpoint_200970.pt"),
                path_to_embed_model=os.path.join(MODELS_DIR, "Embedding", "embedding_function.pt"),

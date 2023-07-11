@@ -57,7 +57,7 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
                    lang="en",
                    lr=0.001,
                    epochs_per_save=1,
-                   warmup_steps=4000,
+                   warmup_steps=10,
                    path_to_checkpoint=resume_checkpoint,
                    path_to_embed_model=os.path.join(save_dir, "embedding_function.pt"),
                    fine_tune=finetune,
@@ -68,3 +68,5 @@ def run(gpu_id, resume_checkpoint, finetune, model_dir, resume, use_wandb, wandb
 
     if use_wandb:
         wandb.finish()
+
+
