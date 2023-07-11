@@ -199,6 +199,183 @@ def build_path_to_transcript_dict_vctk():
                     path_to_transcript[wav_path] = transcript
     return limit_to_n(path_to_transcript)
 
+def build_path_to_transcript_dict_vctk_p226():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p226"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p226/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p226/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript)
+
+def build_path_to_transcript_dict_vctk_p251():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p251"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p251/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p251/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript)
+########################################################################################################################
+def build_path_to_transcript_dict_vctk_p252_200data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p252"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p252/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p252/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 200)
+
+def build_path_to_transcript_dict_vctk_p252_100data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p252"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p252/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p252/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 100)
+
+def build_path_to_transcript_dict_vctk_p252_150data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p252"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p252/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p252/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 150)
+
+def build_path_to_transcript_dict_vctk_p252_50data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p252"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p252/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p252/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 50)
+
+def build_path_to_transcript_dict_vctk_p252_35data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p252"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p252/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p252/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 35)
+########################################################################################################################
+def build_path_to_transcript_dict_vctk_p254_200data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p254"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p254/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p254/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 200)
+
+def build_path_to_transcript_dict_vctk_p254_150data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p254"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p254/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p254/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 150)
+
+def build_path_to_transcript_dict_vctk_p254_100data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p254"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p254/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p254/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 100)
+
+def build_path_to_transcript_dict_vctk_p254_50data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p254"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p254/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p254/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 50)
+
+def build_path_to_transcript_dict_vctk_p254_35data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p254"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p254/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p254/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 35)
+########################################################################################################################
+def build_path_to_transcript_dict_vctk_p230_200data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p230"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p230/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p230/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 200)
+
+def build_path_to_transcript_dict_vctk_p230_150data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p230"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p230/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p230/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 150)
+
+def build_path_to_transcript_dict_vctk_p230_100data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p230"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p230/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p230/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 100)
+
+def build_path_to_transcript_dict_vctk_p230_50data():
+    path_to_transcript = dict()
+    for transcript_file in os.listdir(f"/mount/resources/speech/corpora/VCTK/txt/p230"):
+        if transcript_file.endswith(".txt"):
+            with open(f"/mount/resources/speech/corpora/VCTK/txt/p230/" + transcript_file, 'r', encoding='utf8') as tf:
+                transcript = tf.read()
+            wav_path = f"/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p230/" + transcript_file.rstrip(".txt") + "_mic2.flac"
+            if os.path.exists(wav_path):
+                path_to_transcript[wav_path] = transcript
+    return limit_to_n(path_to_transcript, n = 50)
+
+
 
 def build_path_to_transcript_dict_libritts():
     path_train = "/mount/resources/speech/corpora/LibriTTS/train-clean-100"

@@ -4,7 +4,7 @@ import torch
 from matplotlib import cm
 from matplotlib import pyplot as plt
 
-matplotlib.use("tkAgg")
+#matplotlib.use("tkAgg")
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 import numpy
@@ -15,7 +15,7 @@ from Preprocessing.GSTExtractor import ProsodicConditionExtractor
 
 class Visualizer:
 
-    def __init__(self, sr=48000, device="cpu", model_id="Meta"):
+    def __init__(self, sr=48000, device="cpu"):
         """
         Args:
             sr: The sampling rate of the audios you want to visualize.
@@ -23,7 +23,6 @@ class Visualizer:
         self.tsne = TSNE(n_jobs=-1, learning_rate="auto", init="pca", verbose=1, n_iter_without_progress=20000, n_iter=60000)
         self.pca = PCA(n_components=2)
         self.pros_cond_ext = ProsodicConditionExtractor(sr=sr, device=device)
-        self.model_id = model_id
         self.device = device
         self.sr = sr
 
@@ -101,7 +100,7 @@ class Visualizer:
             plt.show()
         plt.close()
 
-    def calculate_spk_sim(self, reference_path, comparisons, model_id):
+    def calculate_spk_sim(self, reference_path, comparisons):
         embedding_list = list()
         for filepath in tqdm(comparisons):
             wave, sr = sf.read(filepath)
@@ -111,7 +110,7 @@ class Visualizer:
                 print("One of the Audios you included doesn't match the sampling rate of this visualizer object, "
                       "creating a new condition extractor. Results will be correct, but if there are too many cases "
                       "of changing samplingrate, this will run very slowly.")
-                self.pros_cond_ext = ProsodicConditionExtractor(sr=sr, model_id=model_id)
+                self.pros_cond_ext = ProsodicConditionExtractor(sr=sr)
                 self.sr = sr
             embedding_list.append(self.pros_cond_ext.extract_condition_from_reference_wave(wave).squeeze())
 
@@ -121,8 +120,9 @@ class Visualizer:
             self.sr = sr
         reference_embedding = self.pros_cond_ext.extract_condition_from_reference_wave(wave).squeeze()
 
+
         sims = list()
         for comp_emb in embedding_list:
-            sims.append(torch.cosine_similarity(reference_embedding, comp_emb, dim=0))
-
+            sims.append(torch.cosine_similarity(reference_embedding, comp_emb, dim=0).detach())
+            print(sims)
         return (sum(sims) / len(sims)).item(), numpy.std(sims)
