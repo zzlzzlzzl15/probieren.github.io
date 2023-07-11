@@ -129,8 +129,7 @@ def visualize_speakers_languages_crossover():
             ltf[label] = list()
         ltf[label].append(f"audios/speakers_for_plotting/{file}")
     vs.visualize_speaker_embeddings(label_to_filepaths=ltf, title_of_plot="Speakers Across Languages", include_pca=False)
-
-
+"""
 def calculate_spk_sims_multiling():
     ltf = dict()
     vs = Visualizer()
@@ -143,7 +142,33 @@ def calculate_spk_sims_multiling():
         label = reference.split(".")[0]
         print(label)
         print(vs.calculate_spk_sim(f"audios/multilanguage_references/{reference}", ltf[label]))
+"""
+def calculate_spk_sims_multiling():
 
+    """
+    ltf = dict()
+    reference = "LJ001-0025.wav"
+    for file in os.listdir("audios/LJspeech/LJspeech_0025/"):
+
+        label = "_".join(file.split("_")[-2:-1])
+        vs = Visualizer(sr=48000, device="cpu")
+
+        if label not in ltf:
+            ltf[label] = list()
+        ltf[label].append(f"audios/LJspeech/LJspeech_0025/{file}")
+
+        print(label)
+        print(vs.calculate_spk_sim(reference_path=f"audios/LJspeech/{reference}", comparisons=f"audios/LJspeech/{reference}"))
+        #print(vs.calculate_spk_sim( reference_path = f"audios/LJspeech/{reference}", comparisons = ltf[label]))
+    """
+    ltf = []
+    reference = "LJ001-0025.wav"
+    #/mount/studenten5/projects/zhouzg/master_fastspeech2_adapter/audios/LJspeech/LJ001-0005.wav
+    #/mount/studenten5/projects/zhouzg/master_fastspeech2_adapter/audios/LJspeech/FastSpeech2_BitFit_0005.wav
+    ltf.append(f"audios/LJspeech/LJspeech_16kHz/FastSpeech2_libri_all_clean_adapter_LJspeech_0050.wav")
+    vs = Visualizer(sr=16000, device="cpu")
+
+    print(vs.calculate_spk_sim(reference_path=f"audios/LJspeech/LJ001-0050.wav", comparisons=ltf))
 
 def _test_speaker_embedding_extraction():
     wave, sr = sf.read("audios/speaker_references_for_testing/female_mid_voice.wav")
@@ -159,4 +184,4 @@ def check_same_params(model1, model2):
 
 
 if __name__ == '__main__':
-    visualize_speakers_and_emotions(model_id="LibriGST_new")
+    calculate_spk_sims_multiling()

@@ -4,6 +4,63 @@ import torch
 
 from InferenceInterfaces.FastSpeech2Interface import InferenceFastSpeech2
 
+all_models = [
+"libri_all_clean_adapter_LJspeech",
+"finetuning_LJspeech",
+"BitFit",
+"diff_pruning_LJspeech"
+]
+"""
+all_models = [
+"libri_all_clean_adapter_VCTK_252_200data",
+"diff_pruning_vctk_p252_200data",
+"BitFit_vctk_p252_200data",
+"finetuning_vctk_p252_200data",
+"libri_all_clean_adapter_VCTK_252_150data",
+"BitFit_vctk_p252_150data",
+"diff_pruning_vctk_p252_150data",
+"finetuning_vctk_p252_150data",
+"libri_all_clean_adapter_VCTK_252_100data",
+"BitFit_vctk_p252_100data",
+"diff_pruning_vctk_p252_100data",
+"finetuning_vctk_p252_100data",
+"libri_all_clean_adapter_VCTK_252_50data",
+"BitFit_vctk_p252_50data",
+"diff_pruning_vctk_p252_50data",
+"finetuning_vctk_p252_50data",
+"libri_all_clean_adapter_VCTK_254_200data",
+"diff_pruning_vctk_p254_200data",
+"BitFit_vctk_p254_200data",
+"finetuning_vctk_p254_200data",
+"libri_all_clean_adapter_VCTK_254_150data",
+"BitFit_vctk_p254_150data",
+"diff_pruning_vctk_p254_150data",
+"finetuning_vctk_p254_150data",
+"libri_all_clean_adapter_VCTK_254_100data",
+"BitFit_vctk_p254_100data",
+"diff_pruning_vctk_p254_100data",
+"finetuning_vctk_p254_100data",
+"libri_all_clean_adapter_VCTK_254_50data",
+"BitFit_vctk_p254_50data",
+"diff_pruning_vctk_p254_50data",
+"finetuning_vctk_p254_50data",
+"libri_all_clean_adapter_VCTK_230_200data",
+"diff_pruning_vctk_p230_200data",
+"BitFit_vctk_p230_200data",
+"finetuning_vctk_p230_200data",
+"libri_all_clean_adapter_VCTK_230_150data",
+"BitFit_vctk_p230_150data",
+"diff_pruning_vctk_p230_150data",
+"finetuning_vctk_p230_150data",
+"libri_all_clean_adapter_VCTK_230_100data",
+"BitFit_vctk_p230_100data",
+"diff_pruning_vctk_p230_100data",
+"finetuning_vctk_p230_100data",
+"libri_all_clean_adapter_VCTK_230_50data",
+"BitFit_vctk_p230_50data",
+"diff_pruning_vctk_p230_50data",
+"finetuning_vctk_p230_50data"]
+"""
 
 def read_texts(model_id, sentence, filename, device="cpu", language="en", speaker_reference=None):
     tts = InferenceFastSpeech2(device=device, model_name=model_id)
@@ -63,9 +120,9 @@ def read_contrastive_focus_sentences(model_id, device):
 if __name__ == '__main__':
     exec_device = "cuda" if torch.cuda.is_available() else "cpu"
     os.makedirs("audios", exist_ok=True)
-
-    read_texts(model_id="diff_pruning_LJspeech",
-               sentence="This is a sentence meant for testing, whether the new vocoder works the way I hope it does!",
-               filename="audios/FastSpeech2_diff_pruning_LJspeech.wav",
-               device=exec_device,
-               language="en")
+    for name in all_models:
+        read_texts(model_id=name,
+                   sentence="and though the famous family of Aldus restored its technical excellence, rejecting battered letters,",
+                   filename="audios/LJspeech/FastSpeech2_"+name+"_0050.wav",
+                   #speaker_reference="/mount/resources/speech/corpora/VCTK/wav48_silence_trimmed/p251/p251_023_mic2.flac",
+                   device=exec_device,)

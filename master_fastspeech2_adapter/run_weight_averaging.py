@@ -15,21 +15,21 @@ def load_net_fast(path):
     check_dict = torch.load(path, map_location=torch.device("cpu"))
     try:
         net = FastSpeech2()
-        net.load_state_dict(check_dict["model"])
+        net.load_state_dict(check_dict["model"], strict=False)
     except RuntimeError:
         try:
             net = FastSpeech2(lang_embs=None)
-            net.load_state_dict(check_dict["model"])
+            net.load_state_dict(check_dict["model"], strict=False)
         except RuntimeError:
             net = FastSpeech2(lang_embs=None, utt_embed_dim=None)
-            net.load_state_dict(check_dict["model"])
+            net.load_state_dict(check_dict["model"], strict=False)
     return net, check_dict["default_emb"]
 
 
 def load_net_hifigan(path):
     check_dict = torch.load(path, map_location=torch.device("cpu"))
     net = HiFiGANGenerator()
-    net.load_state_dict(check_dict["generator"])
+    net.load_state_dict(check_dict["generator"], strict=False)
     return net, None  # does not have utterance embedding
 
 

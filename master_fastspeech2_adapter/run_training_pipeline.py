@@ -21,6 +21,85 @@ from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_LJspeech impo
 from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p226 import run as vctk_p226_adapter
 from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p226 import run as BitFit_vctk_p226
 from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p226 import run as diff_pruning_vctk_p226
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p226 import run as finetuning_vctk_p226
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p251 import run as adapter_finetuning_vctk_p251
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p251 import run as finetuning_vctk_p251
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p251 import run as BitFit_vctk_p251
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p251 import run as diff_pruning_vctk_p251
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p252_200data import run as adapter_finetuning_vctk_p252_200data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p252_200data import run as diff_pruning_vctk_p252_200data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p252_200data import run as BitFit_vctk_p252_200data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p252_200data import run as finetuning_vctk_p252_200data
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p252_100data import run as adapter_finetuning_vctk_p252_100data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p252_100data import run as BitFit_vctk_p252_100data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p252_100data import run as diff_pruning_vctk_p252_100data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p252_100data import run as finetuning_vctk_p252_100data
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p252_150data import run as adapter_finetuning_vctk_p252_150data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p252_150data import run as BitFit_vctk_p252_150data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p252_150data import run as diff_pruning_vctk_p252_150data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p252_150data import run as finetuning_vctk_p252_150data
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p252_50data import run as adapter_finetuning_vctk_p252_50data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p252_50data import run as BitFit_vctk_p252_50data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p252_50data import run as diff_pruning_vctk_p252_50data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p252_50data import run as finetuning_vctk_p252_50data
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p252_35data import run as adapter_finetuning_vctk_p252_35data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p252_35data import run as BitFit_vctk_p252_35data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p252_35data import run as diff_pruning_vctk_p252_35data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p252_35data import run as finetuning_vctk_p252_35data
+
+################################################################################################################################################
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p254_200data import run as adapter_finetuning_vctk_p254_200data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p254_200data import run as diff_pruning_vctk_p254_200data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p254_200data import run as BitFit_vctk_p254_200data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p254_200data import run as finetuning_vctk_p254_200data
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p254_150data import run as adapter_finetuning_vctk_p254_150data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p254_150data import run as BitFit_vctk_p254_150data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p254_150data import run as diff_pruning_vctk_p254_150data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p254_150data import run as finetuning_vctk_p254_150data
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p254_100data import run as adapter_finetuning_vctk_p254_100data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p254_100data import run as BitFit_vctk_p254_100data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p254_100data import run as diff_pruning_vctk_p254_100data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p254_100data import run as finetuning_vctk_p254_100data
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p254_50data import run as adapter_finetuning_vctk_p254_50data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p254_50data import run as BitFit_vctk_p254_50data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p254_50data import run as diff_pruning_vctk_p254_50data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p254_50data import run as finetuning_vctk_p254_50data
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p254_35data import run as adapter_finetuning_vctk_p254_35data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p254_35data import run as BitFit_vctk_p254_35data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p254_35data import run as diff_pruning_vctk_p254_35data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p254_35data import run as finetuning_vctk_p254_35data
+###################################################################################################################################################
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p230_200data import run as adapter_finetuning_vctk_p230_200data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p230_200data import run as diff_pruning_vctk_p230_200data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p230_200data import run as BitFit_vctk_p230_200data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p230_200data import run as finetuning_vctk_p230_200data
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p230_150data import run as adapter_finetuning_vctk_p230_150data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p230_150data import run as BitFit_vctk_p230_150data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p230_150data import run as diff_pruning_vctk_p230_150data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p230_150data import run as finetuning_vctk_p230_150data
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p230_100data import run as adapter_finetuning_vctk_p230_100data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p230_100data import run as BitFit_vctk_p230_100data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p230_100data import run as diff_pruning_vctk_p230_100data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p230_100data import run as finetuning_vctk_p230_100data
+
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_adapter_finetuning_vctk_p230_50data import run as adapter_finetuning_vctk_p230_50data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_BitFit_vctk_p230_50data import run as BitFit_vctk_p230_50data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_diff_pruning_vctk_p230_50data import run as diff_pruning_vctk_p230_50data
+from TrainingInterfaces.TrainingPipelines.FastSpeech2_finetuning_vctk_p230_50data import run as finetuning_vctk_p230_50data
+
+
 
 pipeline_dict = {
     "meta":             meta_fast,
@@ -43,6 +122,67 @@ pipeline_dict = {
     "vctk_p226_adapter": vctk_p226_adapter,
     "BitFit_vctk_p226" : BitFit_vctk_p226,
     "diff_pruning_vctk_p226" : diff_pruning_vctk_p226,
+    "finetuning_vctk_p226" : finetuning_vctk_p226,
+    "adapter_finetuning_vctk_p251": adapter_finetuning_vctk_p251,
+    "finetuning_vctk_p251": finetuning_vctk_p251,
+    "BitFit_vctk_p251": BitFit_vctk_p251,
+    "diff_pruning_vctk_p251": diff_pruning_vctk_p251,
+    "adapter_finetuning_vctk_p252_200data": adapter_finetuning_vctk_p252_200data,
+    "diff_pruning_vctk_p252_200data": diff_pruning_vctk_p252_200data,
+    "BitFit_vctk_p252_200data": BitFit_vctk_p252_200data,
+    "finetuning_vctk_p252_200data": finetuning_vctk_p252_200data,
+    "adapter_finetuning_vctk_p252_150data": adapter_finetuning_vctk_p252_150data,
+    "BitFit_vctk_p252_150data": BitFit_vctk_p252_150data,
+    "diff_pruning_vctk_p252_150data": diff_pruning_vctk_p252_150data,
+    "finetuning_vctk_p252_150data": finetuning_vctk_p252_150data,
+    "adapter_finetuning_vctk_p252_100data": adapter_finetuning_vctk_p252_100data,
+    "BitFit_vctk_p252_100data": BitFit_vctk_p252_100data,
+    "diff_pruning_vctk_p252_100data": diff_pruning_vctk_p252_100data,
+    "finetuning_vctk_p252_100data": finetuning_vctk_p252_100data,
+    "adapter_finetuning_vctk_p252_50data": adapter_finetuning_vctk_p252_50data,
+    "BitFit_vctk_p252_50data": BitFit_vctk_p252_50data,
+    "diff_pruning_vctk_p252_50data": diff_pruning_vctk_p252_50data,
+    "finetuning_vctk_p252_50data": finetuning_vctk_p252_50data,
+    "adapter_finetuning_vctk_p252_35data": adapter_finetuning_vctk_p252_35data,
+    "BitFit_vctk_p252_35data": BitFit_vctk_p252_35data,
+    "diff_pruning_vctk_p252_35data": diff_pruning_vctk_p252_35data,
+    "finetuning_vctk_p252_35data": finetuning_vctk_p252_35data,
+    "adapter_finetuning_vctk_p254_200data": adapter_finetuning_vctk_p254_200data,
+    "diff_pruning_vctk_p254_200data": diff_pruning_vctk_p254_200data,
+    "BitFit_vctk_p254_200data": BitFit_vctk_p254_200data,
+    "finetuning_vctk_p254_200data": finetuning_vctk_p254_200data,
+    "adapter_finetuning_vctk_p254_150data": adapter_finetuning_vctk_p254_150data,
+    "BitFit_vctk_p254_150data": BitFit_vctk_p254_150data,
+    "diff_pruning_vctk_p254_150data": diff_pruning_vctk_p254_150data,
+    "finetuning_vctk_p254_150data": finetuning_vctk_p254_150data,
+    "adapter_finetuning_vctk_p254_100data": adapter_finetuning_vctk_p254_100data,
+    "BitFit_vctk_p254_100data": BitFit_vctk_p254_100data,
+    "diff_pruning_vctk_p254_100data": diff_pruning_vctk_p254_100data,
+    "finetuning_vctk_p254_100data": finetuning_vctk_p254_100data,
+    "adapter_finetuning_vctk_p254_50data": adapter_finetuning_vctk_p254_50data,
+    "BitFit_vctk_p254_50data": BitFit_vctk_p254_50data,
+    "diff_pruning_vctk_p254_50data": diff_pruning_vctk_p254_50data,
+    "finetuning_vctk_p254_50data": finetuning_vctk_p254_50data,
+    "adapter_finetuning_vctk_p254_35data": adapter_finetuning_vctk_p254_35data,
+    "BitFit_vctk_p254_35data": BitFit_vctk_p254_35data,
+    "diff_pruning_vctk_p254_35data": diff_pruning_vctk_p254_35data,
+    "finetuning_vctk_p254_35data": finetuning_vctk_p252_35data,
+    "adapter_finetuning_vctk_p230_200data": adapter_finetuning_vctk_p230_200data,
+    "diff_pruning_vctk_p230_200data": diff_pruning_vctk_p230_200data,
+    "BitFit_vctk_p230_200data": BitFit_vctk_p230_200data,
+    "finetuning_vctk_p230_200data": finetuning_vctk_p230_200data,
+    "adapter_finetuning_vctk_p230_150data": adapter_finetuning_vctk_p230_150data,
+    "BitFit_vctk_p230_150data": BitFit_vctk_p230_150data,
+    "diff_pruning_vctk_p230_150data": diff_pruning_vctk_p230_150data,
+    "finetuning_vctk_p230_150data": finetuning_vctk_p230_150data,
+    "adapter_finetuning_vctk_p230_100data": adapter_finetuning_vctk_p230_100data,
+    "BitFit_vctk_p230_100data": BitFit_vctk_p230_100data,
+    "diff_pruning_vctk_p230_100data": diff_pruning_vctk_p230_100data,
+    "finetuning_vctk_p230_100data": finetuning_vctk_p230_100data,
+    "adapter_finetuning_vctk_p230_50data": adapter_finetuning_vctk_p230_50data,
+    "BitFit_vctk_p230_50data": BitFit_vctk_p230_50data,
+    "diff_pruning_vctk_p230_50data": diff_pruning_vctk_p230_50data,
+    "finetuning_vctk_p230_50data": finetuning_vctk_p230_50data,
 }
 
 if __name__ == '__main__':
